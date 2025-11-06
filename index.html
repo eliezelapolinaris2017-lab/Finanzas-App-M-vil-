@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <title>Nexus Finance — Móvil</title>
+  <link rel="icon" type="image/png" href="assets/logo.png"/>
+  <meta name="theme-color" content="#0B0D10"/>
+  <link rel="stylesheet" href="styles.css?v=1"/>
+  <style>
+    :root{ --bg:#0B0D10; --card:#0F1216; --muted:#9aa4b2; --bd:#222831; --accent:#C7A24B; --txt:#F2F3F5 }
+    *{box-sizing:border-box} html,body{margin:0;height:100%}
+    body{background:var(--bg);color:var(--txt);font:15px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Arial}
+    .app{display:flex;flex-direction:column;height:100vh;max-width:780px;margin:0 auto}
+    header{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+      header img{width:28px;height:28px;border-radius:8px}
+      header .brand{font-weight:800}
+      .grow{flex:1}
+      .btn, .btn-outline{all:unset;cursor:pointer;border-radius:11px;padding:8px 12px}
+      .btn{background:var(--accent);color:#000;font-weight:700}
+      .btn-outline{border:1px solid var(--bd);background:#12161c}
+    main{flex:1;overflow:auto}
+    section.view{display:none;padding:12px}
+    section.view.visible{display:block}
+    .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:10px}
+    .title{font-weight:700;margin-bottom:8px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    label{display:flex;flex-direction:column;gap:6px}
+    input,select{border-radius:10px;border:1px solid var(--bd);background:#0f141a;color:var(--txt);padding:10px 12px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-top:1px solid var(--bd);text-align:left}
+    thead th{border-top:none;color:var(--muted);font-weight:600}
+    .kpi{font-weight:800;font-size:22px}
+    .muted{color:var(--muted)}
+    .right{text-align:right}
+    .row{display:flex;align-items:center;gap:8px}
+    .footer{position:sticky;bottom:0;border-top:1px solid var(--bd);background:var(--bg)}
+    .tabs{display:grid;grid-template-columns:repeat(5,1fr)}
+    .tab{all:unset;text-align:center;padding:10px 6px;color:var(--muted);cursor:pointer}
+    .tab.active{color:var(--txt);font-weight:700}
+    .num{font-variant-numeric:tabular-nums}
+    .hint{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <header>
+      <img src="assets/logo.png" alt="logo">
+      <div class="brand">Nexus Finance</div>
+      <div class="grow"></div>
+      <button id="btnPDF" class="btn-outline">PDF</button>
+    </header>
+
+    <main>
+      <!-- ===== Gastos ===== -->
+      <section id="s-expenses" class="view visible">
+        <div class="card">
+          <div class="title">Nuevo gasto</div>
+          <form id="f-expense" class="grid2">
+            <label>Fecha <input type="date" id="expDate"></label>
+            <label>Categoría
+              <select id="expCat">
+                <option>Gasolina</option><option>Comida</option><option>Transporte</option>
+                <option>Mantenimiento</option><option>Servicios</option><option>Otros</option>
+              </select>
+            </label>
+            <label class="full">Descripción <input type="text" id="expDesc" placeholder="Descripción"></label>
+            <label>Método
+              <select id="expMethod">
+                <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option><option>Transferencia</option>
+              </select>
+            </label>
+            <label>Ref <input type="text" id="expRef" placeholder="#ref"></label>
+            <label>Monto <input type="number" step="0.01" id="expAmount"></label>
+            <div class="grid2" style="grid-column:1/-1">
+              <button type="button" id="expToday" class="btn-outline">Hoy</button>
+              <button class="btn">Guardar</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="row between">
+            <div class="title">Gastos</div>
+            <div class="kpi num" id="expTotal">—</div>
+          </div>
+          <table id="tbl-exp">
+            <thead><tr><th>Fecha</th><th>Cat</th><th>Desc</th><th>Mét</th><th>Ref</th><th class="right">Monto</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Ingresos ===== -->
+      <section id="s-incomes" class="view">
+        <div class="card">
+          <div class="title">Nuevo ingreso</div>
+          <form id="f-income" class="grid2">
+            <label>Fecha <input type="date" id="incDate"></label>
+            <label>Origen <input type="text" id="incClient" placeholder="Cliente/Origen"></label>
+            <label>Método
+              <select id="incMethod">
+                <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option><option>Transferencia</option>
+              </select>
+            </label>
+            <label>Ref <input type="text" id="incRef" placeholder="#ref"></label>
+            <label>Monto <input type="number" step="0.01" id="incAmount"></label>
+            <div class="grid2" style="grid-column:1/-1">
+              <button type="button" id="incToday" class="btn-outline">Hoy</button>
+              <button class="btn">Guardar</button>
+            </div>
+          </form>
+        </div>
+        <div class="card">
+          <div class="row between">
+            <div class="title">Ingresos</div>
+            <div class="kpi num" id="incTotal">—</div>
+          </div>
+          <table id="tbl-inc">
+            <thead><tr><th>Fecha</th><th>Origen</th><th>Mét</th><th>Ref</th><th class="right">Monto</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Factura (crear) ===== -->
+      <section id="s-invoice" class="view">
+        <div class="card">
+          <div class="title">Factura</div>
+          <form id="f-inv" class="grid2">
+            <label>Fecha <input type="date" id="invDate"></label>
+            <label># Factura <input type="text" id="invNumber"></label>
+            <label>Cliente <input type="text" id="invClient"></label>
+            <label>Método
+              <select id="invMethod">
+                <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option><option>Transferencia</option>
+              </select>
+            </label>
+            <label class="full">Email <input type="email" id="invEmail"></label>
+            <label class="full">Dirección <input type="text" id="invAddress"></label>
+
+            <div class="full" style="grid-column:1/-1">
+              <div class="row between"><strong>Ítems</strong>
+                <div class="row">
+                  <button type="button" id="invAdd" class="btn-outline">Añadir ítem</button>
+                  <button type="button" id="invCalc" class="btn-outline">Calcular</button>
+                </div>
+              </div>
+              <table id="tbl-inv-items">
+                <thead><tr><th>Descripción</th><th>Cant.</th><th>Precio</th><th>Imp %</th><th class="right">Importe</th><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+              <div class="right hint">Subtotal: <span id="invSub">—</span> · Impuestos: <span id="invTax">—</span> · <strong>Total: <span id="invTot">—</span></strong></div>
+            </div>
+
+            <label class="full">Nota <input type="text" id="invNote"></label>
+            <label class="full">Términos <input type="text" id="invTerms"></label>
+            <div class="grid2" style="grid-column:1/-1">
+              <button class="btn">Guardar Factura</button>
+              <button type="button" id="invToday" class="btn-outline">Hoy</button>
+            </div>
+          </form>
+          <div class="hint">Al guardar, se registra automáticamente un ingreso por el total.</div>
+        </div>
+      </section>
+
+      <!-- ===== Historial Facturas ===== -->
+      <section id="s-history" class="view">
+        <div class="card">
+          <div class="row between">
+            <div class="title">Historial de Facturas</div>
+            <input id="invSearch" type="search" placeholder="Buscar # o cliente" style="max-width:240px">
+          </div>
+          <table id="tbl-inv">
+            <thead><tr><th>Fecha</th><th>#</th><th>Cliente</th><th class="right">Total</th><th>Mét</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ===== Exportar PDF ===== -->
+      <section id="s-export" class="view">
+        <div class="card">
+          <div class="title">Exportaciones</div>
+          <div class="grid3">
+            <button class="btn" data-pdf="expenses">Gastos</button>
+            <button class="btn" data-pdf="incomes">Ingresos</button>
+            <button class="btn" data-pdf="invoices">Facturas (lista)</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <nav class="tabs">
+        <button class="tab active" data-view="s-expenses">Gastos</button>
+        <button class="tab" data-view="s-incomes">Ingresos</button>
+        <button class="tab" data-view="s-invoice">Factura</button>
+        <button class="tab" data-view="s-history">Historial</button>
+        <button class="tab" data-view="s-export">PDF</button>
+      </nav>
+    </footer>
+
+  </div>
+
+  <!-- jsPDF -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script type="module" src="app.js?v=1"></script>
+</body>
+</html>
