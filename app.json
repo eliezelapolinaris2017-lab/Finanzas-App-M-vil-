@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Nexus Finance",
+    "slug": "nexus-finance-mobile",
+    "scheme": "nexusfinance",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": { "image": "./assets/splash.png", "resizeMode": "contain", "backgroundColor": "#0B0D10" },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tuempresa.nexusfinance",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.tuempresa.nexusfinance"
+    },
+    "plugins": ["expo-auth-session"],
+    "extra": {
+      "eas": { "projectId": "RELLENA_SI_USAS_EAS" },
+      "firebase": {
+        "apiKey": "AIzaSyC66vv3-yaap1mV2n1GXRUopLqccobWqRE",
+        "authDomain": "finanzas-web-f4e05.firebaseapp.com",
+        "projectId": "finanzas-web-f4e05",
+        "storageBucket": "finanzas-web-f4e05.firebasestorage.app",
+        "messagingSenderId": "1047152523619",
+        "appId": "1:1047152523619:web:7d8f7d1f7a5ccc6090bb56"
+      }
+    }
+  }
+}
