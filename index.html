@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Nexus Finance Móvil</title>
+  <link rel="icon" href="assets/logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+  <!-- Login overlay -->
+  <div id="authView" class="overlay visible">
+    <div class="card">
+      <img src="assets/logo.png" alt="Logo" class="logo">
+      <h1>Nexus Finance</h1>
+      <p class="muted">Inicia sesión con Google para sincronizar</p>
+      <button id="btnGoogle" class="btn">Continuar con Google</button>
+    </div>
+  </div>
+
+  <!-- App -->
+  <header class="topbar">
+    <h2 class="title">Nexus Finance</h2>
+    <div class="spacer"></div>
+    <button id="btnSignOut" class="btn-outline small">Salir</button>
+  </header>
+
+  <main id="app" class="app" hidden>
+    <!-- Tabs -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="income">💰 Entrada</button>
+      <button class="tab" data-tab="expense">💸 Gasto</button>
+      <button class="tab" data-tab="invoice">🧾 Factura</button>
+      <button class="tab" data-tab="history">📜 Historial</button>
+    </nav>
+
+    <!-- 1) ENTRADA -->
+    <section id="tab-income" class="view visible">
+      <div class="card">
+        <h3>Entrada de dinero</h3>
+        <form id="formIncome" class="grid2">
+          <label>Fecha
+            <input type="date" id="incDate">
+          </label>
+          <label>Cliente/Origen
+            <input type="text" id="incClient" placeholder="Cliente u origen" required>
+          </label>
+          <label>Método
+            <select id="incMethod">
+              <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option>
+              <option>ATH Móvil</option><option>Transferencia</option>
+            </select>
+          </label>
+          <label>Referencia
+            <input type="text" id="incRef" placeholder="#ATH / #cheque">
+          </label>
+          <label class="full">Monto
+            <input type="number" step="0.01" id="incAmount" required>
+          </label>
+          <button class="btn full">Guardar ingreso</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 2) GASTO -->
+    <section id="tab-expense" class="view">
+      <div class="card">
+        <h3>Gasto diario</h3>
+        <form id="formExpense" class="grid2">
+          <label>Fecha
+            <input type="date" id="expDate">
+          </label>
+          <label>Categoría
+            <input type="text" id="expCategory" placeholder="Gasolina, Comida…" required>
+          </label>
+          <label>Método
+            <select id="expMethod">
+              <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option>
+              <option>ATH Móvil</option><option>Transferencia</option>
+            </select>
+          </label>
+          <label>Descripción
+            <input type="text" id="expDesc" placeholder="Descripción">
+          </label>
+          <label>Nota
+            <input type="text" id="expNote" placeholder="Nota (opcional)">
+          </label>
+          <label>Monto
+            <input type="number" step="0.01" id="expAmount" required>
+          </label>
+          <button class="btn full">Guardar gasto</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 3) FACTURA -->
+    <section id="tab-invoice" class="view">
+      <div class="card">
+        <h3>Crear factura</h3>
+        <form id="formInvoice" class="grid2">
+          <label>Fecha
+            <input type="date" id="invDate">
+          </label>
+          <label>Vence
+            <input type="date" id="invDueDate">
+          </label>
+          <label># Factura
+            <input type="text" id="invNumber" placeholder="FAC-0001" required>
+          </label>
+          <label>Cliente
+            <input type="text" id="invClient" required>
+          </label>
+          <label>Email
+            <input type="email" id="invEmail" placeholder="cliente@email.com">
+          </label>
+          <label>Teléfono
+            <input type="text" id="invPhone" placeholder="(787)...">
+          </label>
+          <label class="full">Dirección
+            <input type="text" id="invAddress" placeholder="Dirección del cliente">
+          </label>
+
+          <!-- Ítems -->
+          <div class="full">
+            <div class="row between">
+              <strong>Ítems</strong>
+              <button type="button" id="btnAddItem" class="btn-outline small">Añadir ítem</button>
+            </div>
+            <table class="data" id="itemsTable">
+              <thead>
+                <tr><th>Descripción</th><th>Cant.</th><th>Precio</th><th>Imp %</th><th>Importe</th><th></th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="totals right">
+              Subtotal: <span id="tSubtotal">—</span> ·
+              Impuestos: <span id="tTax">—</span> ·
+              <strong>Total:</strong> <span id="tTotal">—</span>
+            </div>
+          </div>
+
+          <label class="full">Nota
+            <input type="text" id="invNote" placeholder="Nota (opcional)">
+          </label>
+          <label class="full">Términos
+            <input type="text" id="invTerms" placeholder="Términos de pago">
+          </label>
+
+          <label>Método
+            <select id="invMethod">
+              <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option>
+              <option>ATH Móvil</option><option>Transferencia</option>
+            </select>
+          </label>
+
+          <button class="btn full">Guardar factura</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4) HISTORIAL + PDF -->
+    <section id="tab-history" class="view">
+      <div class="card">
+        <div class="row between">
+          <h3>Historial de facturas</h3>
+          <button id="btnExportPdf" class="btn-outline">Exportar PDF</button>
+        </div>
+        <input id="searchInv" class="search" placeholder="Buscar por # o cliente">
+        <table class="data" id="histTable">
+          <thead>
+            <tr><th>Fecha</th><th>#</th><th>Cliente</th><th>Total</th><th>Método</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Firebase SDKs (v10 modular CDN) -->
+  <script type="module" src="app.js"></script>
+  <!-- jsPDF + autotable (para tabla en PDF) -->
+  <script src="https://cdn
