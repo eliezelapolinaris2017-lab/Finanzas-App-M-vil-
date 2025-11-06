@@ -1,11 +1,11 @@
 // ============ CONFIGURA TU FIREBASE AQUÍ ============
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_AUTH_DOMAIN",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_STORAGE_BUCKET",
-  messagingSenderId: "TU_SENDER_ID",
-  appId: "TU_APP_ID",
+  apiKey: "AIzaSyC66vv3-yaap1mV2n1GXRUopLqccobWqRE",
+  authDomain: "finanzas-web-f4e05.firebaseapp.com",
+  projectId: "finanzas-web-f4e05",
+  storageBucket: "finanzas-web-f4e05.firebasestorage.app",
+  messagingSenderId: "1047152523619",
+  appId: "1:1047152523619:web:7d8f7d1f7a5ccc6090bb56"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
