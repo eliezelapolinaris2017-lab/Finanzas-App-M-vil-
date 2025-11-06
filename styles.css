@@ -1,0 +1,91 @@
+:root{
+  --bg:#0b0d10; --bg2:#10141a; --card:#12151b;
+  --text:#f2f3f5; --muted:#98a1b3; --gold:#c7a24b; --gold2:#ffe6a3;
+  --border:rgba(255,255,255,.08); --radius:14px;
+  --accent:#caa952;
+  --danger:#ff6464;
+  --ok:#74d68a;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:radial-gradient(1000px 700px at -10% -10%, #0e131b 0, #0c1017 50%, var(--bg) 100%);
+  color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+.view{display:none}
+.view.visible{display:block}
+.center{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:20px}
+
+.login-card{
+  width:min(480px,92vw);
+  background:linear-gradient(180deg,#0f131a,#0b0d10);
+  border:1px solid rgba(199,162,75,.45);border-radius:18px;padding:20px 18px;text-align:center;
+  box-shadow:0 10px 40px rgba(0,0,0,.55), inset 0 0 0 1px rgba(199,162,75,.08);
+}
+.logo{width:72px;height:72px;object-fit:contain;border-radius:16px;border:1px solid var(--border);background:#0b0d10;margin-bottom:8px}
+.btn,.btn-outline{
+  border:1px solid transparent;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:700;letter-spacing:.2px
+}
+.btn{background:linear-gradient(180deg,#caa952,#b58c2f);color:#111;border-color:rgba(255,227,150,.35)}
+.btn-outline{background:#11151c;color:#e6e6e6;border-color:var(--border)}
+.btn:hover{filter:brightness(1.04);transform:translateY(-1px)}
+.btn-outline:hover{border-color:rgba(199,162,75,.5)}
+.muted{color:var(--muted)}
+.topbar{
+  position:sticky;top:0;z-index:5;background:rgba(16,20,26,.7);backdrop-filter:blur(8px);
+  border:1px solid var(--border);border-radius:16px;padding:10px 12px;margin:10px
+}
+.brand{display:flex;gap:10px;align-items:center}
+.brand img{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:#0b0d10}
+.grow{flex:1}
+
+.tabs{
+  display:flex;gap:8px;position:sticky;top:64px;margin:8px 10px 0;z-index:4
+}
+.tab{flex:1;background:#0f131a;border:1px solid var(--border);color:#e8ecf2;border-radius:12px;padding:10px;cursor:pointer}
+.tab.active{background:linear-gradient(180deg,rgba(199,162,75,.18),rgba(199,162,75,.08));border-color:rgba(199,162,75,.55);color:#fff}
+
+.screen{padding:10px;display:none}
+.screen.visible{display:block}
+.card{
+  background:linear-gradient(180deg,var(--card) 0%, #141a23 100%);
+  border:1px solid var(--border);border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.35);
+  padding:12px;margin:10px 10px 14px
+}
+h1,h2,h3{margin:.3rem 0 .6rem}
+h2{color:#f0d28b}
+
+.grid2{display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+.grid2 .full{grid-column:1/-1}
+label{display:flex;flex-direction:column;gap:6px;color:#d9dee7;font-size:.95rem}
+input,select{
+  background:#0f141c;color:#e6e8ed;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:1rem
+}
+input::placeholder{color:#7b8394}
+input:focus,select:focus{outline:2px solid rgba(199,162,75,.45);outline-offset:2px}
+
+table{width:100%;border-collapse:collapse}
+.data thead th{background:#0f131a;color:#e9edf4;border-bottom:1px solid var(--border);text-align:left;padding:10px;font-size:.9rem}
+.data tbody td{border-bottom:1px dashed rgba(255,255,255,.07);padding:10px;color:#dfe4ee;vertical-align:top}
+.right{ text-align:right }
+.totals{display:flex;gap:12px;justify-content:flex-end;margin-top:8px}
+
+.toast{
+  position:fixed;left:50%;bottom:16px;transform:translateX(-50%) translateY(120%);
+  background:#101419;color:#f6f7fb;border:1px solid rgba(199,162,75,.35);padding:10px 12px;border-radius:10px;
+  transition:.25s;z-index:1000
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media (max-width:800px){ .grid2{grid-template-columns:1fr} }
+
+/* print: PDF limpio */
+@media print{
+  body{background:#fff;color:#000}
+  .topbar,.tabs,.toast,#loginView{display:none!important}
+  .card{border-color:#000;background:#fff;color:#000;box-shadow:none}
+  .data thead th{border-bottom:1px solid #000;color:#000;background:#fff}
+  .data tbody td{border-bottom:1px dotted #666;color:#000}
+}
