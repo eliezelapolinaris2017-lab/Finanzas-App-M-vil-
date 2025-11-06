@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Nexus Finance Móvil</title>
+  <link rel="icon" href="assets/logo.png" type="image/png"/>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0b0d10"/>
+  <link rel="stylesheet" href="styles.css"/>
+
+  <!-- jsPDF + AutoTable (PDF) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <!-- Firebase (ESM modular) -->
+  <script type="module">
+    // Solo para registrar SW lo antes posible
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js').catch(console.error);
+      });
+    }
+  </script>
+</head>
+<body>
+  <!-- LOGIN -->
+  <section id="loginView" class="view visible center">
+    <div class="login-card">
+      <img src="assets/logo.png" alt="Logo" class="logo"/>
+      <h1>Nexus Finance</h1>
+      <p class="muted">App móvil: Ingresos, Gastos, Facturas y PDF</p>
+      <button id="btnGoogle" class="btn">Continuar con Google</button>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <main id="appView" class="view">
+    <header class="topbar">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Logo"/>
+        <div>
+          <strong>Nexus Finance</strong><br/>
+          <small id="userEmail" class="muted">—</small>
+        </div>
+      </div>
+      <div class="grow"></div>
+      <button id="btnLogout" class="btn-outline">Salir</button>
+    </header>
+
+    <!-- NAV (tabs) -->
+    <nav class="tabs">
+      <button class="tab active" data-view="incomes">💰 Entrada</button>
+      <button class="tab" data-view="expenses">💸 Gastos</button>
+      <button class="tab" data-view="invoiceCreate">🧾 Facturar</button>
+      <button class="tab" data-view="invoiceHistory">📜 Historial</button>
+    </nav>
+
+    <!-- 1) ENTRADAS -->
+    <section id="incomes" class="screen visible" data-title="Entradas de dinero">
+      <div class="card">
+        <h2>Nueva entrada</h2>
+        <form id="incomeForm" class="grid2">
+          <label>Fecha
+            <input type="date" id="incDate" required>
+          </label>
+          <label>Método
+            <select id="incMethod">
+              <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option>
+              <option>ATH Móvil</option><option>Transferencia</option>
+            </select>
+          </label>
+          <label class="full">Cliente / Origen
+            <input id="incClient" placeholder="Cliente u origen" required>
+          </label>
+          <label>Monto
+            <input id="incAmount" type="number" step="0.01" required>
+          </label>
+          <label class="full">Nota
+            <input id="incNote" placeholder="Nota (opcional)">
+          </label>
+          <div class="full">
+            <button class="btn" id="btnSaveIncome">Guardar</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Últimas entradas</h3>
+        <table class="data" id="incomesTable">
+          <thead><tr><th>Fecha</th><th>Cliente</th><th>Método</th><th class="right">Monto</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 2) GASTOS -->
+    <section id="expenses" class="screen" data-title="Gastos diarios">
+      <div class="card">
+        <h2>Nuevo gasto</h2>
+        <form id="expenseForm" class="grid2">
+          <label>Fecha
+            <input type="date" id="expDate" required>
+          </label>
+          <label>Categoría
+            <select id="expCategory">
+              <option>Gasolina</option><option>Comida</option><option>Insumos</option>
+              <option>Servicios</option><option>Herramientas</option><option>Otros</option>
+            </select>
+          </label>
+          <label class="full">Descripción
+            <input id="expDesc" placeholder="Descripción" required>
+          </label>
+          <label>Método
+            <select id="expMethod">
+              <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option>
+              <option>ATH Móvil</option><option>Transferencia</option>
+            </select>
+          </label>
+          <label>Monto
+            <input id="expAmount" type="number" step="0.01" required>
+          </label>
+          <div class="full">
+            <button class="btn" id="btnSaveExpense">Guardar</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Últimos gastos</h3>
+        <table class="data" id="expensesTable">
+          <thead><tr><th>Fecha</th><th>Categoría</th><th>Descripción</th><th class="right">Monto</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3) CREAR FACTURA -->
+    <section id="invoiceCreate" class="screen" data-title="Crear factura">
+      <div class="card">
+        <h2>Factura</h2>
+        <form id="invoiceForm" class="grid2">
+          <label>Fecha
+            <input type="date" id="invDate" required>
+          </label>
+          <label>Vence
+            <input type="date" id="invDue" required>
+          </label>
+          <label># Factura
+            <input id="invNumber" placeholder="FAC-0001" required>
+          </label>
+          <label>Cliente
+            <input id="invClient" required placeholder="Nombre del cliente">
+          </label>
+          <label class="full">Dirección
+            <input id="invAddress" placeholder="Dirección del cliente">
+          </label>
+          <label>Método
+            <select id="invMethod">
+              <option>Efectivo</option><option>Tarjeta</option><option>Cheque</option>
+              <option>ATH Móvil</option><option>Transferencia</option>
+            </select>
+          </label>
+          <label>Email
+            <input id="invEmail" type="email" placeholder="cliente@correo.com">
+          </label>
+
+          <div class="full">
+            <div class="row between">
+              <strong>Ítems</strong>
+              <div class="row g">
+                <button type="button" id="btnAddItem" class="btn-outline">Añadir ítem</button>
+                <button type="button" id="btnCalc" class="btn-outline">Calcular</button>
+              </div>
+            </div>
+            <table class="data" id="itemsTable">
+              <thead><tr><th>Descripción</th><th>Cant.</th><th>Precio</th><th>Imp %</th><th class="right">Importe</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <div class="totals right">
+              Subtotal: <span id="tSubtotal">—</span> ·
+              Impuestos: <span id="tTax">—</span> ·
+              <strong>Total:</strong> <span id="tTotal">—</span>
+            </div>
+          </div>
+
+          <label class="full">Nota
+            <input id="invNote" placeholder="Nota/observaciones (opcional)">
+          </label>
+
+          <div class="full">
+            <button class="btn" id="btnSaveInvoice">Guardar factura</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4) HISTORIAL FACTURAS -->
+    <section id="invoiceHistory" class="screen" data-title="Historial de facturas">
+      <div class="card">
+        <div class="row between">
+          <h2>Facturas</h2>
+          <button class="btn-outline" id="btnExportPDF">Exportar PDF</button>
+        </div>
+        <div class="row g">
+          <input id="searchInvoice" placeholder="Buscar # o cliente" class="grow">
+        </div>
+        <table class="data" id="invoicesTable">
+          <thead><tr><th>Fecha</th><th>#</th><th>Cliente</th><th>Método</th><th class="right">Total</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- App -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
