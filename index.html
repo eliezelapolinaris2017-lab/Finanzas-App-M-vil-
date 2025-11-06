@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <title>Nexus Finance Móvil</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0B0D10"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png"/>
+
+  <link rel="icon" type="image/png" href="assets/logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+
+  <!-- Firebase (compat para simplicidad) -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.0/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+
+  <!-- jsPDF para exportar facturas -->
+  <script defer src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <!-- App -->
+  <script type="module" defer src="app.js"></script>
+</head>
+<body>
+
+  <!-- LOGIN (Google) -->
+  <div id="login" class="screen visible">
+    <div class="wrap">
+      <img src="assets/logo.png" alt="Logo" class="logo"/>
+      <h1>Nexus Finance</h1>
+      <p class="muted">Inicia sesión con Google para continuar</p>
+      <button id="btnGoogle" class="btn">Continuar con Google</button>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="app">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button id="btnMenu" class="icon">☰</button>
+      <div class="grow"></div>
+      <button id="btnLogout" class="btn-outline">Salir</button>
+    </header>
+
+    <!-- Sidebar (4 módulos) -->
+    <aside id="drawer" class="drawer">
+      <div class="brand">
+        <img src="assets/logo.png" alt="Logo"/>
+        <div>
+          <strong>Nexus Finance</strong><br/>
+          <small>Firebase Sync</small>
+        </div>
+      </div>
+      <nav class="menu">
+        <button class="nav active" data-target="incomes">💰 Entrada de dinero</button>
+        <button class="nav" data-target="expenses">💸 Gastos diarios</button>
+        <button class="nav" data-target="invoiceNew">🧾 Crear factura</button>
+        <button class="nav" data-target="invoiceList">📜 Historial de facturas</button>
+      </nav>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="main">
+      <!-- ENTRADA DE DINERO -->
+      <section id="incomes" class="view visible" data-title="Entrada de dinero">
+        <div class="card">
+          <h2>Nuevo ingreso</h2>
+          <form id="formIncome" class="grid2">
+            <label>Fecha
+              <input type="date" id="incDate" required>
+            </label>
+            <label>Método
+              <select id="incMethod" required>
+                <option>Efectivo</option><option>Tarjeta</option>
+                <option>Cheque</option><option>ATH Móvil</option><option>Transferencia</option>
+              </select>
+            </label>
+            <label class="full">Cliente / Origen
+              <input type="text" id="incClient" placeholder="Cliente u origen" required>
+            </label>
+            <label>Monto
+              <input type="number" id="incAmount" step="0.01" required>
+            </label>
+            <label>Ref.
+              <input type="text" id="incRef" placeholder="#ATH / #cheque / #tarjeta">
+            </label>
+            <div class="full row g">
+              <button type="button" id="incToday" class="btn-outline">Hoy</button>
+              <button class="btn">Guardar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Ingresos recientes</h3>
+          <ul id="listIncomes" class="list"></ul>
+        </div>
+      </section>
+
+      <!-- GASTOS DIARIOS -->
+      <section id="expenses" class="view" data-title="Gastos diarios">
+        <div class="card">
+          <h2>Nuevo gasto</h2>
+          <form id="formExpense" class="grid2">
+            <label>Fecha
+              <input type="date" id="expDate" required>
+            </label>
+            <label>Categoría
+              <select id="expCategory" required>
+                <option>Gasolina</option><option>Comida</option><option>Servicios</option>
+                <option>Insumos</option><option>Herramientas</option><option>Otros</option>
+              </select>
+            </label>
+            <label class="full">Descripción
+              <input type="text" id="expDesc" placeholder="Descripción" required>
+            </label>
+            <label>Método
+              <select id="expMethod" required>
+                <option>Efectivo</option><option>Tarjeta</option>
+                <option>Cheque</option><option>ATH Móvil</option><option>Transferencia</option>
+              </select>
+            </label>
+            <label>Monto
+              <input type="number" id="expAmount" step="0.01" required>
+            </label>
+            <div class="full row g">
+              <button type="button" id="expToday" class="btn-outline">Hoy</button>
+              <button class="btn">Guardar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <h3>Gastos recientes</h3>
+          <ul id="listExpenses" class="list"></ul>
+        </div>
+      </section>
+
+      <!-- CREAR FACTURA -->
+      <section id="invoiceNew" class="view" data-title="Crear factura">
+        <div class="card">
+          <h2>Factura</h2>
+          <form id="formInvoice" class="grid2">
+            <label>Fecha
+              <input type="date" id="invDate" required>
+            </label>
+            <label>Vence
+              <input type="date" id="invDue" required>
+            </label>
+            <label># Factura
+              <input type="text" id="invNumber" placeholder="FAC-0001" required>
+            </label>
+            <label>Método
+              <select id="invMethod" required>
+                <option>Efectivo</option><option>Tarjeta</option>
+                <option>Cheque</option><option>ATH Móvil</option><option>Transferencia</option>
+              </select>
+            </label>
+            <label class="full">Cliente
+              <input type="text" id="invClient" required>
+            </label>
+            <label class="full">Email
+              <input type="email" id="invEmail" placeholder="cliente@ejemplo.com">
+            </label>
+            <label class="full">Teléfono
+              <input type="text" id="invPhone" placeholder="(787) 000-0000">
+            </label>
+
+            <div class="full">
+              <div class="row between">
+                <strong>Ítems</strong>
+                <button type="button" id="btnAddItem" class="btn-outline">Añadir ítem</button>
+              </div>
+              <table class="table" id="itemsTable">
+                <thead><tr><th>Descripción</th><th>Cant.</th><th>Precio</th><th>Impuesto %</th><th>Total</th><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+              <div class="totals right">
+                Subtotal: <span id="tSub">—</span> · Impuestos: <span id="tTax">—</span> ·
+                <strong>Total:</strong> <span id="tGrand">—</span>
+              </div>
+            </div>
+
+            <label class="full">Notas
+              <input type="text" id="invNote" placeholder="Observaciones">
+            </label>
+
+            <div class="full row g">
+              <button type="button" id="invToday" class="btn-outline">Hoy</button>
+              <button class="btn">Guardar factura</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- HISTORIAL DE FACTURAS -->
+      <section id="invoiceList" class="view" data-title="Historial de facturas">
+        <div class="card">
+          <h2>Facturas</h2>
+          <input id="invSearch" class="search" type="search" placeholder="Buscar # o cliente"/>
+          <ul id="listInvoices" class="list"></ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toasts" class="toasts"></div>
+
+  <!-- SW registro + A2HS -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+    }
+    let deferredPrompt;
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault(); deferredPrompt = e;
+    });
+  </script>
+</body>
+</html>
