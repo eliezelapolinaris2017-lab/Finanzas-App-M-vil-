@@ -14,12 +14,12 @@ import {
  * 1) Firebase CONFIG
  * ========================== */
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROYECTO.firebaseapp.com",
-  projectId: "TU_PROJECT_ID",
-  storageBucket: "TU_PROJECT_ID.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "1:XXXX:web:YYYY"
+  apiKey: "AIzaSyCp23981tPx3DsXvPyK4ZeAfkFPb3pL6pU",
+  authDomain: "nexus-chat-7e32b.firebaseapp.com",
+  projectId: "nexus-chat-7e32b",
+  storageBucket: "nexus-chat-7e32b.firebasestorage.app",
+  messagingSenderId: "780849892655",
+  appId: "1:780849892655:web:b329ad45dffb7931f3a5da"
 };
 // Si tu web usa base de datos nombrada, coloca el ID aquí:
 const FIRESTORE_DB_ID = undefined; // p.ej. "nexus-db" si usas getFirestore(app, "nexus-db")
